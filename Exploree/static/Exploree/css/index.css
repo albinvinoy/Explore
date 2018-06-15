@@ -1,0 +1,13 @@
+.current p {
+    vertical-align: top;
+    display: inline-block;
+}
+
+img{
+    width: 508px;
+    height: 255px;
+}
+
+.card{
+    background-color: blanchedalmond;
+}
