@@ -5,11 +5,15 @@ from .accessKey import GEO_ACCESS_KEY, YELP_API_KEY
 
 def index(request):
     print(getGeoCoordinates())
+
     return render(request, 'exploree/index.html')
 
 
 def food(request):
     return HttpResponse("This is food page")
+
+def activitites(request):
+    return HttpResponse("This is the activities page")
     
 # access the ipstack to get geo location
 def getGeoCoordinates():

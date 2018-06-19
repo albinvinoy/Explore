@@ -1,2 +1,2 @@
-YELP_API_KEY=""
-GEO_ACCESS_KEY = "" #api.ipstack.com
+YELP_API_KEY="_9lSdEylcyUrURMdo0RU4tmV3wmvco0MXaWBk3mcxomqoZShLXPcl1YZOfg-4qHKDVXFZeIPPRIbPZdv8LeHoKPVDGNV90wULEey0tMdHVphlHhpV_sBAsoFHfknW3Yx"
+GEO_ACCESS_KEY = "6355c5c7edec3cf8b5f6de9d705ccc78" #api.ipstack.com
