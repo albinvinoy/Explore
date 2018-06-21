@@ -1,9 +1,70 @@
-{% extends 'exploree/base.html' %}
+{% extends 'exploree/base.html' %} {% block content%}
 
-{% block content%}
+<div class="card-columns " style="margin: 3%;">
+    {% for x in raw_data %}
+    <!-- {{ x }} -->
+    <div class="card">
+        <img class="card-img-top  h-50" src="{{ x.image }}" alt="Card image cap">
+        <div class="card-body">
+            <div class="container-fluid">
+                <div class="row">
+                    <h5 class="card-title">{{ x.title }}</h5>
+                </div>
+            </div>
 
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <p>{{ x.address }}</p>
+                    </div>
+                    <div class="col">
+                        <p>DISTANCE</p>
+                    </div>
+                </div>
+            </div>
 
-{{ raw_data | safe }}
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col">
+                        <p>{{ x.number }}</p>
 
+                    </div>
+                    <div class="col">
+                        {% with rating=x.rating %} {% load static %}
 
-{% endblock content %}
+                        <img src="{% static 'Exploree/images/small_' %}{{ x.rating }}.png" alt="{{ x.rating }}" style="width: 84px; height: 14px;"> {% endwith %}
+                    </div>
+
+                </div>
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col">
+                            <a href="{{ x.url }}">
+                
+                                {% load static %}
+                                <img src="{% static "Exploree/images/yelpIcon.png" %}" alt="yelp" style="width: 84px; height: 50px;">
+                            </a>
+                            <!--  -->
+                        </div>
+                    </div>
+                </div>
+                </div>
+
+            <!-- <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is
+                    a little bit longer.</p>
+                <a href="#" class="btn btn-primary">More Info</a>
+                <div class="card-footer card-basic">
+                        <iframe src="https://embed.waze.com/iframe?zoom=13&lat=40.78247&lon=-73.97105&pin=1"
+                        width="100%" height="520"></iframe>
+                        <!-- {% load static %}
+                        <img src="{% static "Exploree/images/yelpIcon.png" %}" alt="yelp" style="height: 100px; width:100px;">
+                      </div> -->
+        </div>
+
+    </div>
+    {% endfor %}
+
+</div>
+
+{{ raw_data |safe }} {% endblock content %}
