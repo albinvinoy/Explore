@@ -18,7 +18,8 @@
                         <p>{{ x.address }}</p>
                     </div>
                     <div class="col">
-                        <p>DISTANCE</p>
+                        {% widthratio x.tripDetails.baseTime  60 1 as time %}
+                        <p>{{ x.tripDetails.distance }} meters away. You will be there in {{ time }} minutes</p>
                     </div>
                 </div>
             </div>
