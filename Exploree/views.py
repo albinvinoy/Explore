@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404
 import requests
 from .accessKey import *
-import json, random
+import json, random, timeit
 # Create your views here.
 
 #main - make request
@@ -25,7 +25,7 @@ def getGeoCoordinates():
         data = response.json()
         return [data["latitude"], data["longitude"]]
     else:
-        # print("Failed to get response")
+        # #print("Failed to get response")
         return [34.0522, -118.2437] #default to LA
 
 #here maps api
@@ -42,8 +42,9 @@ def tripDetails(ocord, dcord):
     }
 
     response = makeRequest(baseUrl, params=url_params)
+    #print(response + 'here api')
     if response.status_code == 200:
-        # print(response.json()['response']['route'][0]['summary'])
+        # #print(response.json()['response']['route'][0]['summary'])
         return response.json()['response']['route'][0]['summary']
     else:
         return None
@@ -67,13 +68,14 @@ def formatYelpData(jsonData):
         temp["tripDetails"] = tripDetails(getGeoCoordinates(),destCoord)
 
         finalData.append(temp)
+    #print(finalData + 'massage data')
 
     return finalData
 
 
 def getYelpInfo(keyword="", coordinates=[]):
     term = keyword or "dinner" # get from form
-    SEARCH_LIMIT = 10 # 10 as default
+    SEARCH_LIMIT = 6 # 10 as default
     url = "https://api.yelp.com/v3/businesses/search"
 
     headers = {
@@ -89,26 +91,42 @@ def getYelpInfo(keyword="", coordinates=[]):
     }
 
     response = makeRequest(url=url, params=url_params, headers=headers)
+    #print(response + 'yelp call')
     return response
 
 #main view functions
 def index(request):
     # getGeoCoordinates() = getGeoCoordinates()
-    return render(request, 'exploree/index.html')
+    r = ['food', 'dessert', 'outdoor', 'nightlife', 'concert', 'theater', 'parks', 'zoo','hospitals']
+    #print('{} {}'.format(r, "index"))
+    return render(request, 'exploree/index.html', context={"titles" : r })
 
 
-def food(request):
-    r = getYelpInfo('american food', getGeoCoordinates())
+# def food(request):
+#     r = getYelpInfo('american food', getGeoCoordinates())
+#     if r.status_code==200:
+#         r = formatYelpData(r.json())
+#         return render(request, 'exploree/yelp.html', context={'raw_data':r})
+#     else:
+#         return HttpResponse("Failed to Load Data {}".format(r))
+
+# def activitites(request):
+#     r = getYelpInfo('activities', getGeoCoordinates())
+#     if r.status_code==200:
+#         r = formatYelpData(r.json())
+#         return render(request, 'exploree/yelp.html', context={'raw_data':r})
+#     else:
+#         return HttpResponse("Failed to Load Data {}".format(r))
+
+
+def whatTodo(request, whatTodo):
+    start = timeit.default_timer()
+    r = getYelpInfo(whatTodo, getGeoCoordinates())
+    #print(r + "whattodo")
     if r.status_code==200:
         r = formatYelpData(r.json())
+        print(timeit.default_timer() - start)
         return render(request, 'exploree/yelp.html', context={'raw_data':r})
     else:
-        return HttpResponse("Failed to Load Data {}".format(r))
-
-def activitites(request):
-    r = getYelpInfo('activities', getGeoCoordinates())
-    if r.status_code==200:
-        r = formatYelpData(r.json())
-        return render(request, 'exploree/yelp.html', context={'raw_data':r})
-    else:
+        print(timeit.default_timer() - start)        
         return HttpResponse("Failed to Load Data {}".format(r))

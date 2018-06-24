@@ -3,52 +3,25 @@
 {% block content %}
 
 <body>
-    <div class="gridBox">
-        
+    <div class="card-columns" style="margin: 3%">
 
-        <div class="cards">
-            <!-- This would be a loop based on whats generated -->
-            <div class="card">
-                <div class="card-head">
-
-                    <h5 style="float:right;">Food</h5>
-                    {% load static %}
-                    <a href="food">
-                        <img src="{% static "Exploree/images/Food.jpg" %}" alt="Food Image">
-                    </a>
-                </div>
-
-                <div class="card-body">
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum, culpa quas. Esse deleniti rem ab totam
-                        commodi quidem. Esse, nesciunt voluptatem praesentium voluptatibus minima eius omnis distinctio id
-                        est cumque.</p>
-
-                </div>
-            </div>
+        {% for x in titles %}
 
             <div class="card">
-                <div class="card-head">
-
-                    <h5 style="float:right;"></h5>
-                    {% load static %}
-                    <a href="activities">
-                        <img src="{% static "Exploree/images/Food.jpg" %}" alt="Food Image">
-                    </a>
-                </div>
+                <div class="card-header">{{ x }}</div>
 
                 <div class="card-body">
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rerum, culpa quas. Esse deleniti rem ab totam
-                        commodi quidem. Esse, nesciunt voluptatem praesentium voluptatibus minima eius omnis distinctio id
-                        est cumque.</p>
-
+                    <a href="/{{ x }}">
+                        {% load static %}
+                        <div class="card-img-top">
+                            <img src="{% static 'Exploree/images/' %}{{ x }}.jpg" alt=" {{ x }} " style="width: inherit; height: 210px; ">
+                        </div>
+                    </a>
                 </div>
             </div>
+        {% endfor %}
 
-
-
-        </div>
     </div>
-
-</body>
+    </body>
 
 {% endblock content %}
