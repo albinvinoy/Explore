@@ -1,7 +1,9 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404
 import requests
 from .accessKey import *
-import json, random, timeit
+import json, random, timeit, multiprocessing
+from multiprocessing import Pool
+from decimal import *
 # Create your views here.
 
 #main - make request
@@ -31,7 +33,7 @@ def getGeoCoordinates():
 #here maps api
 
 def tripDetails(ocord, dcord):
-    baseUrl = "https://route.cit.api.here.com/routing/7.2/calculateroute.json"
+    baseUrl = "https://route.api.here.com/routing/7.2/calculateroute.json"
     url_params = {
         "app_id" : HERE_API_ID,
         "app_code" : HERE_APP_CODE,
@@ -50,32 +52,34 @@ def tripDetails(ocord, dcord):
         return None
 #yelp api helper
 
-def formatYelpData(jsonData):
-    finalData = []
-    for x in jsonData["businesses"]:
-        temp = {}
-        destCoord = [x["coordinates"]["latitude"], x["coordinates"]["longitude"]]
-        temp["origin"] = getGeoCoordinates()
-        temp["destination"] = destCoord
-        temp["title" ]= x["name"]
-        temp["rating" ]= x["rating"]
-        temp["open" ]= x["is_closed"]
-        temp["number" ]=x["display_phone"]
-        temp["image" ]= x["image_url"]
-        temp["reviews" ]= x["review_count"]
-        temp["url"] = x["url"]
-        temp["address" ]= ' '.join(x["location"]["display_address"])
-        temp["tripDetails"] = tripDetails(getGeoCoordinates(),destCoord)
-
-        finalData.append(temp)
+def formatYelpData(x):
+    # finalData = []
+    temp = {}
+    destCoord = [x["coordinates"]["latitude"], x["coordinates"]["longitude"]]
+    temp["origin"] = getGeoCoordinates()
+    temp["destination"] = destCoord
+    temp["title" ]= x["name"]
+    temp["rating" ]= x["rating"]
+    temp["open" ]= x["is_closed"]
+    temp["number" ]=x["display_phone"]
+    temp["image" ]= x["image_url"]
+    temp["reviews" ]= x["review_count"]
+    temp["url"] = x["url"]
+    temp["address" ]= ' '.join(x["location"]["display_address"])
+    temp['distance'] = round(x['distance'] * 0.000621371,2)
+    # temp["tripDetails"] = tripDetails(getGeoCoordinates(),destCoord)
+    temp["tripDetails"] = None
+    
+    return temp
+    # finalData.append(temp)
     #print(finalData + 'massage data')
 
-    return finalData
+    # return finalData
 
 
 def getYelpInfo(keyword="", coordinates=[]):
     term = keyword or "dinner" # get from form
-    SEARCH_LIMIT = 6 # 10 as default
+    SEARCH_LIMIT = 20 # 10 as default
     url = "https://api.yelp.com/v3/businesses/search"
 
     headers = {
@@ -124,7 +128,11 @@ def whatTodo(request, whatTodo):
     r = getYelpInfo(whatTodo, getGeoCoordinates())
     #print(r + "whattodo")
     if r.status_code==200:
-        r = formatYelpData(r.json())
+        with Pool(1) as p:
+            r = p.map(formatYelpData, r.json()["businesses"])
+            # print(r)
+        # print(pool)
+        # r = formatYelpData(r.json())
         print(timeit.default_timer() - start)
         return render(request, 'exploree/yelp.html', context={'raw_data':r})
     else:

@@ -19,7 +19,7 @@
                     </div>
                     <div class="col">
                         {% widthratio x.tripDetails.baseTime  60 1 as time %}
-                        <p>{{ x.tripDetails.distance }} meters away. You will be there in {{ time }} minutes</p>
+                        <p>{{ x.distance }} meters away.</p>
                     </div>
                 </div>
             </div>
@@ -57,5 +57,5 @@
     {% endfor %}
 
 </div>
-
-{{ raw_data |safe }} {% endblock content %}
+<!-- {{ raw_data |safe }}  -->
+{% endblock content %}
